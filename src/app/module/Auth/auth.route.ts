@@ -6,17 +6,13 @@ import validateRequest, {
 import { USER_ROLE } from '../User/user.constant';
 import { AuthControllers } from './auth.controller';
 import { AuthValidation } from './auth.validation';
-// import { multerUpload } from '../../config/multer.config';
-import { parseBody } from '../../middleware/bodyParser';
 
 const router = express.Router();
 
 router.post(
-  '/register',
-
-  parseBody,
-  validateRequest(AuthValidation.registerValidationSchema),
-  AuthControllers.registerUser,
+  '/signup',
+  validateRequest(AuthValidation.signupValidationSchema),
+  AuthControllers.signupUser,
 );
 
 router.post(

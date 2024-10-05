@@ -2,7 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import AppError from '../errors/AppError';
-import { USER_ROLE, USER_STATUS } from '../module/User/user.constant';
+import { USER_ROLE, USER_PLANTYPE } from '../module/User/user.constant';
+import { Types } from 'mongoose';
 
 export const createToken = (
   jwtPayload: {
@@ -10,8 +11,14 @@ export const createToken = (
     name: string;
     email: string;
     role: keyof typeof USER_ROLE;
-    status: keyof typeof USER_STATUS;
+    planType: keyof typeof USER_PLANTYPE;
     profilePhoto?: string;
+    followers: Types.ObjectId[];
+    following: Types.ObjectId[];
+    totalUpvote: number;
+    postCount: number;
+    premiumStart?: string;
+    premiumEnd?: string;
   },
   secret: string,
   expiresIn: string,

@@ -2,7 +2,7 @@
 import bcryptjs from 'bcryptjs';
 import { Schema, model } from 'mongoose';
 import config from '../../config';
-import { USER_ROLE, USER_STATUS } from './user.constant';
+import { USER_ROLE, USER_PLANTYPE } from './user.constant';
 import { IUserModel, TUser } from './user.interface';
 
 const userSchema = new Schema<TUser, IUserModel>(
@@ -27,19 +27,54 @@ const userSchema = new Schema<TUser, IUserModel>(
     },
     password: {
       type: String,
-      select: 0,
+      select: 0, // Exclude password from query results
     },
-    status: {
+    planType: {
       type: String,
-      enum: Object.keys(USER_STATUS),
-      default: USER_STATUS.BASIC,
+      enum: Object.keys(USER_PLANTYPE),
+      default: USER_PLANTYPE.BASIC,
+    },
+    profilePhoto: {
+      type: String,
+    },
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User', // Refers to the User model
+      },
+    ],
+    following: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User', // Refers to the User model
+      },
+    ],
+
+    totalUpvote: {
+      type: Number,
+      default: 0,
+    },
+    postCount: {
+      type: Number,
+      default: 0,
     },
     passwordChangedAt: {
       type: Date,
     },
-    profilePhoto: {
+    transactionId: {
       type: String,
-      default: null,
+    },
+    paymentStatus: {
+      type: String,
+    },
+    premiumStart: {
+      type: String,
+    },
+    premiumEnd: {
+      type: String,
+    },
+    premiumCharge: {
+      type: Number,
     },
   },
   {

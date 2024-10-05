@@ -11,7 +11,7 @@ import { TLoginUser } from './auth.interface';
 import AppError from '../../errors/AppError';
 import { TUser } from '../User/user.interface';
 
-const registerUser = async (payload: TUser) => {
+const signupUserToDB = async (payload: TUser) => {
   // checking if the user is exist
   const user = await ModelUser.isUserExistsByEmail(payload?.email);
 
@@ -24,15 +24,19 @@ const registerUser = async (payload: TUser) => {
   // // create new user
   const newUser = await ModelUser.create(payload);
 
-  //create token and sent to the  client
-
   const jwtPayload = {
     _id: newUser._id,
     name: newUser.name,
     email: newUser.email,
-    profilePhoto: newUser.profilePhoto,
     role: newUser.role,
-    status: newUser.status,
+    planType: newUser.planType,
+    profilePhoto: newUser.profilePhoto,
+    followers: newUser.followers,
+    following: newUser.following,
+    totalUpvote: newUser.totalUpvote,
+    postCount: newUser.postCount,
+    premiumStart: newUser.premiumStart,
+    premiumEnd: newUser.premiumEnd,
   };
 
   const accessToken = createToken(
@@ -53,7 +57,7 @@ const registerUser = async (payload: TUser) => {
   };
 };
 
-const loginUser = async (payload: TLoginUser) => {
+const loginUserfromDB = async (payload: TLoginUser) => {
   // checking if the user is exist
   const user = await ModelUser.isUserExistsByEmail(payload?.email);
 
@@ -74,7 +78,13 @@ const loginUser = async (payload: TLoginUser) => {
     email: user.email,
     profilePhoto: user.profilePhoto,
     role: user.role,
-    status: user.status,
+    planType: user.planType,
+    followers: user.followers,
+    following: user.following,
+    totalUpvote: user.totalUpvote,
+    postCount: user.postCount,
+    premiumStart: user.premiumStart,
+    premiumEnd: user.premiumEnd,
   };
 
   const accessToken = createToken(
@@ -163,7 +173,13 @@ const refreshToken = async (token: string) => {
     email: user.email,
     profilePhoto: user.profilePhoto,
     role: user.role,
-    status: user.status,
+    planType: user.planType,
+    followers: user.followers,
+    following: user.following,
+    totalUpvote: user.totalUpvote,
+    postCount: user.postCount,
+    premiumStart: user.premiumStart,
+    premiumEnd: user.premiumEnd,
   };
 
   const accessToken = createToken(
@@ -178,8 +194,8 @@ const refreshToken = async (token: string) => {
 };
 
 export const AuthServices = {
-  registerUser,
-  loginUser,
+  signupUserToDB,
+  loginUserfromDB,
   changePassword,
   refreshToken,
 };

@@ -4,8 +4,8 @@ import { sendResponse } from '../../utils/sendResponse';
 import catchAsync from '../../utils/catchAsync';
 import { AuthServices } from './auth.service';
 
-const registerUser = catchAsync(async (req, res) => {
-  const result = await AuthServices.registerUser(req.body);
+const signupUser = catchAsync(async (req, res) => {
+  const result = await AuthServices.signupUserToDB(req.body);
   const { refreshToken, accessToken } = result;
 
   res.cookie('refreshToken', refreshToken, {
@@ -26,7 +26,7 @@ const registerUser = catchAsync(async (req, res) => {
 });
 
 const loginUser = catchAsync(async (req, res) => {
-  const result = await AuthServices.loginUser(req.body);
+  const result = await AuthServices.loginUserfromDB(req.body);
   const { refreshToken, accessToken } = result;
 
   res.cookie('refreshToken', refreshToken, {
@@ -71,7 +71,7 @@ const refreshToken = catchAsync(async (req, res) => {
 });
 
 export const AuthControllers = {
-  registerUser,
+  signupUser,
   loginUser,
   changePassword,
   refreshToken,

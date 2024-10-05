@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const registerValidationSchema = z.object({
+const signupValidationSchema = z.object({
   body: z.object({
     name: z.string({
       required_error: 'Name is required',
@@ -9,6 +9,10 @@ const registerValidationSchema = z.object({
       required_error: 'Email is required',
     }),
     password: z.string({ required_error: 'Password is required' }),
+    profilePhoto: z
+      .string()
+      .url('Image URL is required and must be valid')
+      .optional(),
   }),
 });
 
@@ -39,7 +43,7 @@ const refreshTokenValidationSchema = z.object({
 });
 
 export const AuthValidation = {
-  registerValidationSchema,
+  signupValidationSchema,
   loginValidationSchema,
   changePasswordValidationSchema,
   refreshTokenValidationSchema,

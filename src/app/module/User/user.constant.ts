@@ -3,7 +3,7 @@ export const USER_ROLE = {
   USER: 'USER',
 } as const;
 
-export const USER_STATUS = {
+export const USER_PLANTYPE = {
   BASIC: 'BASIC',
   PREMIUM: 'PREMIUM',
 } as const;
@@ -13,7 +13,7 @@ export const UserSearchableFields = [
   'email',
   'phone',
   'role',
-  'status',
+  'planType',
 ];
 
 export const DEFAULT_PROFILE_PHOTO_URL =

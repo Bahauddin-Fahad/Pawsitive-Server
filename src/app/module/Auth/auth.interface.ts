@@ -5,7 +5,7 @@ export type TLoginUser = {
   password: string;
 };
 
-export type TRegisterUser = {
+export type TSignupUser = {
   name: string;
   email: string;
   password: string;

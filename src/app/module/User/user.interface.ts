@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { Model } from 'mongoose';
-import { USER_ROLE, USER_STATUS } from './user.constant';
+import { Model, Types } from 'mongoose';
+import { USER_ROLE, USER_PLANTYPE } from './user.constant';
 
 export type TUser = {
   _id?: string;
@@ -8,9 +8,18 @@ export type TUser = {
   role: keyof typeof USER_ROLE;
   email: string;
   password: string;
-  status: keyof typeof USER_STATUS;
-  passwordChangedAt?: Date;
+  planType: keyof typeof USER_PLANTYPE;
+  followers: Types.ObjectId[];
+  following: Types.ObjectId[];
+  totalUpvote: number;
+  postCount: number;
+  paymentStatus?: string;
+  transactionId?: string;
+  premiumCharge?: number;
+  premiumStart?: string;
+  premiumEnd?: string;
   profilePhoto?: string;
+  passwordChangedAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 };

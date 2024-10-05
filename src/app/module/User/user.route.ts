@@ -8,9 +8,29 @@ import { UserValidation } from './user.validation';
 const router = express.Router();
 
 router.post(
-  '/create-user',
-  validateRequest(UserValidation.createUserValidationSchema),
-  UserControllers.userRegister,
+  '/:followedId/follow',
+  auth(USER_ROLE.USER),
+  UserControllers.addFollowing,
+);
+
+router.delete(
+  '/:followedId/follow',
+  auth(USER_ROLE.USER),
+  UserControllers.removeFollowing,
+);
+
+router.put(
+  '/:id',
+  auth(USER_ROLE.USER),
+  validateRequest(UserValidation.updateUserValidationSchema),
+  UserControllers.updateUser,
+);
+
+router.put(
+  '/premium/start-premium',
+  auth(USER_ROLE.USER),
+  validateRequest(UserValidation.getPremiumValidationSchema),
+  UserControllers.startPremium,
 );
 
 router.get('/', auth(USER_ROLE.ADMIN), UserControllers.getAllUsers);

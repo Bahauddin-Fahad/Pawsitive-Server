@@ -1,11 +1,5 @@
 import { Response } from 'express';
-
-type TResponse<T> = {
-  statusCode: number;
-  success: boolean;
-  message: string;
-  data: T;
-};
+import { TResponse } from '../interface/response';
 
 export const sendResponse = <T>(res: Response, data: TResponse<T>) => {
   res.status(data?.statusCode).json({
@@ -13,5 +7,6 @@ export const sendResponse = <T>(res: Response, data: TResponse<T>) => {
     success: data?.success,
     message: data?.message,
     data: data?.data,
+    paymentSession: data?.paymentSession,
   });
 };
