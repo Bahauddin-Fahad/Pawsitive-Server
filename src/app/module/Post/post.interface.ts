@@ -5,17 +5,11 @@ import { POST_STATUS } from './post.constant';
 
 export interface IPost {
   title: string;
-  category:
-    | 'Adventure'
-    | 'Business Travel'
-    | 'Exploration'
-    | 'Family Travel'
-    | 'Luxury Travel'
-    | 'Budget Travel';
+  category: 'Tip' | 'Story';
   description: string; // HTML template in string format
   image: string;
   postAuthor: Types.ObjectId;
-  upvote: number;
-  downvote: number;
+  upvote: Types.ObjectId[];
+  downvote: Types.ObjectId[];
   status: keyof typeof POST_STATUS;
 }

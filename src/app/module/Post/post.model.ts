@@ -8,21 +8,15 @@ const postSchema = new Schema<IPost>(
       type: String,
       required: true,
     },
-    category: {
-      type: String,
-      required: true,
-      enum: [
-        'Adventure',
-        'Business Travel',
-        'Exploration',
-        'Family Travel',
-        'Luxury Travel',
-        'Budget Travel',
-      ],
-    },
+
     description: {
       type: String,
       required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+      enum: ['Tip', 'Story'],
     },
     image: {
       type: String,
@@ -33,16 +27,18 @@ const postSchema = new Schema<IPost>(
       ref: 'User',
       required: true,
     },
-    upvote: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    downvote: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
+    upvote: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User', // Refers to the User model
+      },
+    ],
+    downvote: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User', // Refers to the User model
+      },
+    ],
     status: {
       type: String,
       enum: Object.keys(POST_STATUS),

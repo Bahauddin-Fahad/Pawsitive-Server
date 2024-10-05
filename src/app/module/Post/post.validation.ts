@@ -8,14 +8,7 @@ const createPostValidationSchema = z.object({
         invalid_type_error: 'Post title must be a string',
       })
       .trim(),
-    category: z.enum([
-      'Adventure',
-      'Business Travel',
-      'Exploration',
-      'Family Travel',
-      'Luxury Travel',
-      'Budget Travel',
-    ]),
+    category: z.enum(['Tip', 'Story']),
     description: z
       .string({
         required_error: 'Post description is required',
