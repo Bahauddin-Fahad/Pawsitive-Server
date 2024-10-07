@@ -8,7 +8,6 @@ import { IPost } from './post.interface';
 import { ModelPost } from './post.model';
 import mongoose, { Types } from 'mongoose';
 import { QueryBuilder } from '../../builder/QueryBuilder';
-import { populate } from 'dotenv';
 
 const createPostIntoDB = async (
   payload: Partial<IPost>,
@@ -399,12 +398,12 @@ const deletePostFromDB = async (id: string) => {
 export const PostServices = {
   createPostIntoDB,
   getAllPostsFromDB,
+  getAllPostsInDashboard,
+  getSinglePostFromDB,
+  updatePostIntoDB,
+  deletePostFromDB,
   addPostUpvoteIntoDB,
   removePostUpvoteFromDB,
   addPostDownvoteIntoDB,
   removePostDownvoteFromDB,
-  getSinglePostFromDB,
-  getAllPostsInDashboard,
-  updatePostIntoDB,
-  deletePostFromDB,
 };

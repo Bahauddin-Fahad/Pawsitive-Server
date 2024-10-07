@@ -7,26 +7,22 @@ import { CommentControllers } from './comment.controller';
 
 const router = express.Router();
 
-router.post(
-  '/',
-  auth(USER_ROLE.USER),
-  validateRequest(commentValidations.createCommentValidationSchema),
-  CommentControllers.createComment,
-);
+router
+  .route('/')
+  .get(CommentControllers.getPostAllComments)
+  .post(
+    auth(USER_ROLE.USER),
+    validateRequest(commentValidations.createCommentValidationSchema),
+    CommentControllers.createComment,
+  );
 
-router.put(
-  '/:id',
-  auth(USER_ROLE.USER),
-  validateRequest(commentValidations.updateCommentValidationSchema),
-  CommentControllers.updatePostComment,
-);
-
-router.delete(
-  '/:id',
-  auth(USER_ROLE.USER),
-  CommentControllers.deletePostComment,
-);
-
-router.get('/', CommentControllers.getPostAllComments);
+router
+  .route('/:id')
+  .put(
+    auth(USER_ROLE.USER),
+    validateRequest(commentValidations.updateCommentValidationSchema),
+    CommentControllers.updatePostComment,
+  )
+  .delete(auth(USER_ROLE.USER), CommentControllers.deletePostComment);
 
 export const CommentRoutes = router;

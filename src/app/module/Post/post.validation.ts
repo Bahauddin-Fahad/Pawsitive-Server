@@ -8,14 +8,7 @@ const createPostValidationSchema = z.object({
         invalid_type_error: 'Post title must be a string',
       })
       .trim(),
-    category: z.enum([
-      'Adventure',
-      'Business Travel',
-      'Exploration',
-      'Family Travel',
-      'Luxury Travel',
-      'Budget Travel',
-    ]),
+    category: z.enum(['Tip', 'Story']),
     description: z
       .string({
         required_error: 'Post description is required',
@@ -23,9 +16,9 @@ const createPostValidationSchema = z.object({
       })
       .trim(),
     image: z.string().url('Image URL is required and must be valid'),
-    status: z
+    planType: z
       .string({
-        required_error: 'Post status is required',
+        required_error: 'Post Type is required',
       })
       .trim(),
   }),
@@ -40,16 +33,7 @@ const updatePostValidationSchema = z.object({
       })
       .trim()
       .optional(),
-    category: z
-      .enum([
-        'Adventure',
-        'Business Travel',
-        'Exploration',
-        'Family Travel',
-        'Luxury Travel',
-        'Budget Travel',
-      ])
-      .optional(),
+    category: z.enum(['Tip', 'Story']).optional(),
     description: z
       .string({
         required_error: 'Post description is required',
@@ -58,9 +42,9 @@ const updatePostValidationSchema = z.object({
       .trim()
       .optional(),
     image: z.string().url('Image URL is required and must be valid').optional(),
-    status: z
+    planType: z
       .string({
-        required_error: 'Post status is required',
+        required_error: 'Post Type is required',
       })
       .trim()
       .optional(),

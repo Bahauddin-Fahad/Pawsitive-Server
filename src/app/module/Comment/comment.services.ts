@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { ModelUser } from '../User/user.model';
 import { IComment } from './comment.interface';
-import { Comment } from './comment.model';
+import { ModelComment } from './comment.model';
 import { QueryBuilder } from '../../builder/QueryBuilder';
 
 const createCommentIntoDB = async (payload: Partial<IComment>) => {
@@ -14,7 +14,7 @@ const createCommentIntoDB = async (payload: Partial<IComment>) => {
     throw new AppError(httpStatus.NOT_FOUND, "User doesn't exist!");
   }
 
-  const result = (await Comment.create(remaining)).populate([
+  const result = (await ModelComment.create(remaining)).populate([
     { path: 'user' },
     { path: 'post' },
   ]);
@@ -24,7 +24,7 @@ const createCommentIntoDB = async (payload: Partial<IComment>) => {
 
 const getPostAllCommentsFromDB = async (query: Record<string, unknown>) => {
   const commentQuery = new QueryBuilder(
-    Comment.find().populate([{ path: 'user' }, { path: 'post' }]),
+    ModelComment.find().populate([{ path: 'user' }, { path: 'post' }]),
     query,
   )
     .filter()
@@ -46,7 +46,7 @@ const updatePostCommentIntoDB = async (
   payload: Partial<IComment>,
   id: string,
 ) => {
-  const result = await Comment.findByIdAndUpdate(id, payload, {
+  const result = await ModelComment.findByIdAndUpdate(id, payload, {
     new: true,
   });
 
@@ -54,7 +54,7 @@ const updatePostCommentIntoDB = async (
 };
 
 const deletePostCommentFromDB = async (id: string) => {
-  const result = await Comment.findByIdAndDelete(id);
+  const result = await ModelComment.findByIdAndDelete(id);
   return result;
 };
 
