@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { IPost } from './post.interface';
-import { POST_STATUS } from './post.constant';
+import { POST_TYPE } from './post.constant';
 
 const postSchema = new Schema<IPost>(
   {
@@ -39,10 +39,10 @@ const postSchema = new Schema<IPost>(
         ref: 'User', // Refers to the User model
       },
     ],
-    status: {
+    planType: {
       type: String,
-      enum: Object.keys(POST_STATUS),
-      default: POST_STATUS.BASIC,
+      enum: Object.keys(POST_TYPE),
+      default: POST_TYPE.BASIC,
     },
   },
   {

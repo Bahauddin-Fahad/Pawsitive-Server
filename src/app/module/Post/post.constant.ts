@@ -1,4 +1,4 @@
-export const POST_STATUS = {
+export const POST_TYPE = {
   BASIC: 'BASIC',
   PREMIUM: 'PREMIUM',
 } as const;

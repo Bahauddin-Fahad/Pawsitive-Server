@@ -270,41 +270,6 @@ const removePostDownvoteFromDB = async (
   }
 };
 
-// const getSingleServiceFromDB = async (id: string) => {
-//   const singleService = await CarService.findById(id);
-
-//   if (singleService?.isDeleted) {
-//     return null;
-//   } else {
-//     return singleService;
-//   }
-// };
-
-// const updateServiceIntoDB = async (
-//   payload: Partial<ICarService>,
-//   id: string,
-// ) => {
-//   const result = await CarService.findByIdAndUpdate(id, payload, {
-//     new: true,
-//   });
-
-//   return result;
-// };
-
-// const deleteServiceFromDB = async (id: string) => {
-//   const result = await CarService.findByIdAndUpdate(
-//     id,
-//     {
-//       isDeleted: true,
-//     },
-//     {
-//       new: true,
-//     },
-//   );
-
-//   return result;
-// };
-
 export const PostServices = {
   createPostIntoDB,
   getAllPostsFromDB,
