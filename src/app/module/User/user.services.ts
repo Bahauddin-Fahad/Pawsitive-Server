@@ -165,8 +165,7 @@ const startPremiumIntoDB = async (
 
   const updatedUserInfo = {
     ...payload,
-    status: USER_PLANTYPE.PREMIUM,
-    isVerified: true,
+    planType: USER_PLANTYPE.PREMIUM,
   };
 
   const session = await mongoose.startSession();

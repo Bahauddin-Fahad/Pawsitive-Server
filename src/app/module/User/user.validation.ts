@@ -26,17 +26,17 @@ const getPremiumValidationSchema = z.object({
         invalid_type_error: 'Payment Status must be a string',
       })
       .trim(),
-    // premiumStart: z
-    //   .string({
-    //     required_error: 'Premium Start Date is required',
-    //   })
-    //   .trim(),
-    // premiumEnd: z
-    //   .string({
-    //     required_error: 'Premium End Date is required',
-    //   })
-    //   .trim(),
-    // premiumCharge: z.number().nonnegative().min(1),
+    premiumStart: z
+      .string({
+        required_error: 'Premium Start Date is required',
+      })
+      .trim(),
+    premiumEnd: z
+      .string({
+        required_error: 'Premium End Date is required',
+      })
+      .trim(),
+    premiumCharge: z.number().nonnegative().min(1),
   }),
 });
 

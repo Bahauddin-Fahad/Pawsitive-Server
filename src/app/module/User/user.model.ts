@@ -19,7 +19,6 @@ const userSchema = new Schema<TUser, IUserModel>(
     email: {
       type: String,
       required: true,
-      //validate email
       match: [
         /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
         'Please fill a valid email address',
@@ -27,7 +26,7 @@ const userSchema = new Schema<TUser, IUserModel>(
     },
     password: {
       type: String,
-      select: 0, // Exclude password from query results
+      select: 0,
     },
     planType: {
       type: String,
@@ -40,13 +39,13 @@ const userSchema = new Schema<TUser, IUserModel>(
     followers: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'User', // Refers to the User model
+        ref: 'User',
       },
     ],
     following: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'User', // Refers to the User model
+        ref: 'User',
       },
     ],
 
