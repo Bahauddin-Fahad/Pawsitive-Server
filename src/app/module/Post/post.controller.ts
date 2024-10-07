@@ -34,58 +34,140 @@ const getAllPosts = catchAsync(async (req, res) => {
   });
 });
 
-// const getSinglePost = catchAsync(async (req, res) => {
-//   const id = req.params.id;
+const getAllPostsInDashboard = catchAsync(async (req, res) => {
+  const result = await PostServices.getAllPostsInDashboard(req.query, req.user);
 
-//   const result = await ServicesOfCarService.getSingleServiceFromDB(id);
+  if (result === null) {
+    return sendResponse(res, {
+      success: false,
+      statusCode: httpStatus.NOT_FOUND,
+      message: 'No Data Found',
+      data: [],
+    });
+  }
 
-//   if (result === null) {
-//     return sendResponse(res, {
-//       success: false,
-//       statusCode: httpStatus.NOT_FOUND,
-//       message: 'No Data Found!',
-//       data: [],
-//     });
-//   }
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Posts retrieved successfully',
+    data: result.result,
+    meta: result.meta,
+  });
+});
 
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: httpStatus.OK,
-//     message: 'Service retrieved successfully',
-//     data: result,
-//   });
-// });
+const addPostUpvote = catchAsync(async (req, res) => {
+  const result = await PostServices.addPostUpvoteIntoDB(
+    req.params.postId,
+    req.user,
+  );
 
-// const updatePost = catchAsync(async (req, res) => {
-//   const id = req.params.id;
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'You gave upvote successfully',
+    data: result,
+  });
+});
 
-//   const result = await ServicesOfCarService.updateServiceIntoDB(req.body, id);
+const addPostDownvote = catchAsync(async (req, res) => {
+  const result = await PostServices.addPostDownvoteIntoDB(
+    req.params.postId,
+    req.user,
+  );
 
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: httpStatus.OK,
-//     message: 'Service updated successfully',
-//     data: result,
-//   });
-// });
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'You gave downvote successfully',
+    data: result,
+  });
+});
 
-// const deletePost = catchAsync(async (req, res) => {
-//   const id = req.params.id;
+const removePostUpvote = catchAsync(async (req, res) => {
+  const result = await PostServices.removePostUpvoteFromDB(
+    req.params.postId,
+    req.user,
+  );
 
-//   const result = await ServicesOfCarService.deleteServiceFromDB(id);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'You removed upvote successfully',
+    data: result,
+  });
+});
 
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: httpStatus.OK,
-//     message: 'Service deleted successfully',
-//     data: result,
-//   });
-// });
+const removePostDownvote = catchAsync(async (req, res) => {
+  const result = await PostServices.removePostDownvoteFromDB(
+    req.params.postId,
+    req.user,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'You removed downvote successfully',
+    data: result,
+  });
+});
+
+const getSinglePost = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await PostServices.getSinglePostFromDB(id);
+
+  if (result === null) {
+    return sendResponse(res, {
+      success: false,
+      statusCode: httpStatus.NOT_FOUND,
+      message: 'No Data Found!',
+      data: [],
+    });
+  }
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Post retrieved successfully',
+    data: result,
+  });
+});
+
+const updatePost = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await PostServices.updatePostIntoDB(req.body, id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Post updated successfully',
+    data: result,
+  });
+});
+
+const deletePost = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await PostServices.deletePostFromDB(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Post deleted successfully',
+    data: result,
+  });
+});
 
 export const PostControllers = {
   createPost,
   getAllPosts,
-  //   getSinglePost,
-  //   updatePost,
-  //   deletePost,
+  addPostUpvote,
+  removePostUpvote,
+  addPostDownvote,
+  removePostDownvote,
+  getSinglePost,
+  getAllPostsInDashboard,
+  updatePost,
+  deletePost,
 };

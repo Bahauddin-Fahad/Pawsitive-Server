@@ -1,11 +1,14 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { ModelUser } from '../User/user.model';
 import { IPost } from './post.interface';
 import { ModelPost } from './post.model';
-import { QueryBuilder } from '../../builder/QueryBuilder';
-import { postSearchableFields } from './post.constant';
 import mongoose, { Types } from 'mongoose';
+import { QueryBuilder } from '../../builder/QueryBuilder';
+import { populate } from 'dotenv';
 
 const createPostIntoDB = async (
   payload: Partial<IPost>,
@@ -21,29 +24,90 @@ const createPostIntoDB = async (
 
   const postData = { ...payload, postAuthor: user?._id };
 
-  const result = (await ModelPost.create(postData)).populate('postAuthor');
-  return result;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const [createdPost] = await ModelPost.create([{ ...postData }], {
+      session,
+    });
+
+    const result = await createdPost.populate([{ path: 'postAuthor' }]);
+
+    await ModelUser.findByIdAndUpdate(
+      user._id,
+      { $inc: { postCount: 1 } },
+      { new: true, session },
+    );
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+  }
 };
 
 const getAllPostsFromDB = async (query: Record<string, unknown>) => {
-  const postQuery = new QueryBuilder(
-    ModelPost.find().populate('postAuthor'),
-    query,
-  )
-    .search(postSearchableFields)
-    .filter()
-    .sort()
-    .paginate()
-    .fields();
+  const { sort, searchTerm, ...searchQuery } = query;
 
-  const meta = await postQuery.countTotal();
-  const result = await postQuery.modelQuery;
+  // Base aggregation pipeline
+  const aggregationPipeline: any[] = [
+    {
+      $lookup: {
+        from: 'users', // from 'users' collection
+        localField: 'postAuthor',
+        foreignField: '_id',
+        as: 'postAuthor',
+      },
+    },
+    {
+      $unwind: {
+        path: '$postAuthor',
+        preserveNullAndEmptyArrays: true, // Keep posts without an author
+      },
+    },
+    {
+      $addFields: {
+        upvoteCount: { $size: '$upvote' },
+        downvoteCount: { $size: '$downvote' },
+      },
+    },
+  ];
 
-  if (result.length === 0) {
+  if (searchTerm) {
+    const searchRegex = new RegExp(searchTerm as string, 'i');
+    aggregationPipeline.push({
+      $match: {
+        $or: [
+          { title: searchRegex },
+          { category: searchRegex },
+          { 'postAuthor.name': searchRegex },
+        ],
+      },
+    } as any);
+  }
+
+  if (sort === 'upvote' || sort === 'downvote') {
+    aggregationPipeline.push({
+      $sort: sort === 'upvote' ? { upvoteCount: -1 } : { downvoteCount: 1 },
+    } as any);
+  } else {
+    aggregationPipeline.push({
+      $sort: { createdAt: -1 },
+    } as any);
+  }
+
+  const result = await ModelPost.aggregate(aggregationPipeline);
+
+  if (!result || result.length === 0) {
     return null;
   }
 
-  return { meta, result };
+  return { result };
 };
 
 const addPostUpvoteIntoDB = async (
@@ -74,11 +138,20 @@ const addPostUpvoteIntoDB = async (
     );
   }
 
+  // // Check if the user's ObjectId is in the downvote array
+  // if (post.downvote.some((downvoteId) => downvoteId.equals(userId))) {
+  //   throw new AppError(
+  //     httpStatus.BAD_REQUEST,
+  //     'User has already downvoted this post!',
+  //   );
+  // }
+
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
 
+    // Check if the user's ObjectId is in the downvote array
     if (post.downvote.some((downvoteId) => downvoteId.equals(userId))) {
       await ModelPost.findByIdAndUpdate(
         postId,
@@ -94,7 +167,7 @@ const addPostUpvoteIntoDB = async (
     ).populate('upvote');
 
     await ModelUser.findByIdAndUpdate(
-      _id,
+      post.postAuthor._id,
       { $inc: { totalUpvote: 1 } },
       { new: true, session },
     );
@@ -149,7 +222,7 @@ const removePostUpvoteFromDB = async (
     ).populate('upvote');
 
     await ModelUser.findByIdAndUpdate(
-      _id,
+      post.postAuthor._id,
       { $inc: { totalUpvote: -1 } },
       { new: true, session },
     );
@@ -270,6 +343,59 @@ const removePostDownvoteFromDB = async (
   }
 };
 
+const getSinglePostFromDB = async (id: string) => {
+  const singlePost = await ModelPost.findById(id).populate('postAuthor');
+
+  if (!singlePost) {
+    return null;
+  } else {
+    return singlePost;
+  }
+};
+
+const getAllPostsInDashboard = async (
+  query: Record<string, unknown>,
+  userData: Record<string, unknown>,
+) => {
+  const { email } = userData;
+
+  const user = await ModelUser.isUserExistsByEmail(email as string);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User doesn't exist!");
+  }
+
+  const postQuery = new QueryBuilder(
+    ModelPost.find().populate('postAuthor'),
+    query,
+  )
+    .filter()
+    .sort()
+    .paginate();
+
+  const meta = await postQuery.countTotal();
+  const result = await postQuery.modelQuery;
+
+  if (result.length === 0) {
+    return null;
+  }
+
+  return { meta, result };
+};
+
+const updatePostIntoDB = async (payload: Partial<IPost>, id: string) => {
+  const result = await ModelPost.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+
+  return result;
+};
+
+const deletePostFromDB = async (id: string) => {
+  const result = await ModelPost.findByIdAndDelete(id);
+  return result;
+};
+
 export const PostServices = {
   createPostIntoDB,
   getAllPostsFromDB,
@@ -277,4 +403,8 @@ export const PostServices = {
   removePostUpvoteFromDB,
   addPostDownvoteIntoDB,
   removePostDownvoteFromDB,
+  getSinglePostFromDB,
+  getAllPostsInDashboard,
+  updatePostIntoDB,
+  deletePostFromDB,
 };
