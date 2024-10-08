@@ -1,4 +1,4 @@
-import AppError from '../errors/appError';
+import AppError from '../errors/AppError';
 import catchAsync from '../utils/catchAsync';
 
 export const parseBody = catchAsync(async (req, res, next) => {
