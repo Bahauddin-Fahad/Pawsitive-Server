@@ -4,12 +4,12 @@ import config from '../config';
 
 export const sendEmail = async (to: string, resetLink: string) => {
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: config.nodemailer_host,
     port: 587,
     secure: config.NODE_ENV === 'production',
     auth: {
-      user: 'bahauddin.fahad819@gmail.com',
-      pass: 'givg jglk ykxk unrv',
+      user: config.nodemailer_user,
+      pass: config.nodemailer_pass,
     },
   });
 
