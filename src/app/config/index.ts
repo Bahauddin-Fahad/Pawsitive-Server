@@ -18,4 +18,5 @@ export default {
   base_url: process.env.BASE_URL,
   cancel_url: process.env.CANCEL_URL,
   payment_verify_url: process.env.PAYMENT_VERIFY_URL,
+  reset_pass_ui_link: process.env.RESET_PASSWORD_UI_LINK,
 };

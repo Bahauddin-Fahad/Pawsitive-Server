@@ -57,9 +57,6 @@ const userSchema = new Schema<TUser, IUserModel>(
       type: Number,
       default: 0,
     },
-    passwordChangedAt: {
-      type: Date,
-    },
     transactionId: {
       type: String,
     },
@@ -76,6 +73,9 @@ const userSchema = new Schema<TUser, IUserModel>(
       type: Number,
     },
     isDeleted: { type: Boolean, default: false },
+    passwordChangedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

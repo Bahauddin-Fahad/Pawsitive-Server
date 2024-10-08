@@ -46,17 +46,17 @@ const loginUser = catchAsync(async (req, res) => {
   });
 });
 
-const changePassword = catchAsync(async (req, res) => {
-  const { ...passwordData } = req.body;
+// const changePassword = catchAsync(async (req, res) => {
+//   const { ...passwordData } = req.body;
 
-  const result = await AuthServices.changePassword(req.user, passwordData);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Password updated successfully!',
-    data: result,
-  });
-});
+//   const result = await AuthServices.changePassword(req.user, passwordData);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Password updated successfully!',
+//     data: result,
+//   });
+// });
 
 const refreshToken = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
@@ -70,9 +70,34 @@ const refreshToken = catchAsync(async (req, res) => {
   });
 });
 
+const forgetPassword = catchAsync(async (req, res) => {
+  const userEmail = req.body.email;
+  const result = await AuthServices.forgetPassword(userEmail);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Reset link is generated successfully!',
+    data: result,
+  });
+});
+
+const resetPassword = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+
+  const result = await AuthServices.resetPassword(req.body, token as string);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password reset successful!',
+    data: result,
+  });
+});
+
 export const AuthControllers = {
   signupUser,
   loginUser,
-  changePassword,
+  // changePassword,
   refreshToken,
+  forgetPassword,
+  resetPassword,
 };
