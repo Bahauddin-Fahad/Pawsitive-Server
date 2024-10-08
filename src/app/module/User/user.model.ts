@@ -75,6 +75,7 @@ const userSchema = new Schema<TUser, IUserModel>(
     premiumCharge: {
       type: Number,
     },
+    isDeleted: { type: Boolean, default: false },
   },
   {
     timestamps: true,

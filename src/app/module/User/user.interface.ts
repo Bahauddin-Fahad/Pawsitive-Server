@@ -20,6 +20,7 @@ export type TUser = {
   premiumEnd?: string;
   profilePhoto?: string;
   passwordChangedAt?: Date;
+  isDeleted: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 };

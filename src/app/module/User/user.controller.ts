@@ -25,6 +25,30 @@ const getSingleUser = catchAsync(async (req, res) => {
   });
 });
 
+const updateUser = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await UserServices.updateUserIntoDB(req.body, id, req.user);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User updated successfully',
+    data: result,
+  });
+});
+const deleteUser = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await UserServices.deleteUserFromDB(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User Deleted successfully',
+    data: result,
+  });
+});
 const addFollowing = catchAsync(async (req, res) => {
   const result = await UserServices.addFollowingIntoDB(
     req.params.followedId,
@@ -53,19 +77,6 @@ const removeFollowing = catchAsync(async (req, res) => {
   });
 });
 
-const updateUser = catchAsync(async (req, res) => {
-  const id = req.params.id;
-
-  const result = await UserServices.updateUserIntoDB(req.body, id, req.user);
-
-  sendResponse(res, {
-    success: true,
-    statusCode: httpStatus.OK,
-    message: 'User updated successfully',
-    data: result,
-  });
-});
-
 const startPremium = catchAsync(async (req, res) => {
   const result = await UserServices.startPremiumIntoDB(req.body, req.user);
 
@@ -81,8 +92,9 @@ const startPremium = catchAsync(async (req, res) => {
 export const UserControllers = {
   getSingleUser,
   getAllUsers,
+  updateUser,
+  deleteUser,
   addFollowing,
   removeFollowing,
-  updateUser,
   startPremium,
 };

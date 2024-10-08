@@ -31,6 +31,31 @@ const getSingleUserFromDB = async (id: string) => {
   return user;
 };
 
+const updateUserIntoDB = async (
+  payload: Partial<TUser>,
+  id: string,
+  userData: Record<string, unknown>,
+) => {
+  const { email } = userData;
+
+  const user = await ModelUser.isUserExistsByEmail(email as string);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User doesn't exist!");
+  }
+
+  const result = await ModelUser.findByIdAndUpdate(id, payload, { new: true });
+
+  return result;
+};
+
+const deleteUserFromDB = async (id: string, ) => {
+  const result = await ModelUser.findByIdAndUpdate(id, {isDeleted:true}, {
+    new: true,
+  });
+
+  return result;
+};
 const addFollowingIntoDB = async (
   followedId: string,
   userData: Record<string, unknown>,
@@ -133,24 +158,6 @@ const removeFollowingFromDB = async (
   }
 };
 
-const updateUserIntoDB = async (
-  payload: Partial<TUser>,
-  id: string,
-  userData: Record<string, unknown>,
-) => {
-  const { email } = userData;
-
-  const user = await ModelUser.isUserExistsByEmail(email as string);
-
-  if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User doesn't exist!");
-  }
-
-  const result = await ModelUser.findByIdAndUpdate(id, payload, { new: true });
-
-  return result;
-};
-
 const startPremiumIntoDB = async (
   payload: Partial<TUser>,
   userData: Record<string, unknown>,
@@ -199,8 +206,9 @@ const startPremiumIntoDB = async (
 export const UserServices = {
   getAllUsersFromDB,
   getSingleUserFromDB,
+  updateUserIntoDB,
+  deleteUserFromDB,
   addFollowingIntoDB,
   removeFollowingFromDB,
-  updateUserIntoDB,
   startPremiumIntoDB,
 };
